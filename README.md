@@ -14,6 +14,13 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     5. [Breadth First Search](#5-breadth-first-search)
     6. [Greedy Algorithm](#6-greedy-algorithm)
 
+- [SOLID Principles](#solid-principles)
+    1. [Single Responsibility Principle](#1-single-responsibility-principle)
+    2. [Open Closed Principle](#2-open-closed-principle)
+    3. [Liskov Substitution](#3-liskov-substitution)
+    4. [Interface Segregation](#4-interface-segregation)
+    5. [Dependency Inversion](#5-dependency-inversion)
+
 # Design Patterns
 
 ## 1. Factory Pattern
@@ -54,7 +61,8 @@ Class with a single shared instance, implemented with a static constant/method.
 - Pros: Global Access, Lazy Initialisation, Centralised Configuration (settings), Resource Sharing 
 - Cons: Anti-Pattern, Hard to test global & tightly coupled code, Race Conditions if there's thread conflicts
 
-# Algorithms // TODO: - Add code segments & more details
+# Algorithms 
+// TODO: - Add code segments & more details
 
 ## 1. Binary Search
 - Sorted list by dividing in half 
@@ -74,3 +82,35 @@ Class with a single shared instance, implemented with a static constant/method.
 ## 6. Greedy Algorithm 
 - travelling salesman 
 - shortest path
+
+# SOLID Principles
+// TODO: - Add code segments & more details
+
+## 1. Single Responsibility Principle
+- Avoid Class Monoliths - clear class responsibilities - break down functionality into smaller classes
+- Decoupled code - easier to test
+- Maintainable - changes to one part is less likely to affect others
+
+## 2. Open Closed Principle 
+- Open for extension, closed for modification
+    1. Extensions to add functionality without modifying existing code
+    2. Dependency Injection - substituting dependencies without modifying class
+    3. Abstraction & Inheritance - New functionality can be added by inheriting from parent
+
+## 3. Liskov Substitution 
+- objs of superclass should be replaceable w/ objs subclass without affecting the program 
+    1. Subtype Conformance - subclass inherits from base class & conforms to its protocols
+    2. Overriding Methods - overriden method in subclass should have at least same behaviour as base
+    3. Maintains the same method signature when subclassing or conforming to protocols
+
+## 4. Interface Segregation 
+- should conform only to necessary protocols 
+    1. Smaller & Focused Protocols (Flyable - takeoff(), land(), fly()) Avoid Fat protocols
+    2. Conform to multiple relevant protocols (Duck - Flyable, Swimmable)
+    3. Provide Default Implementation when needed
+    4. Protocol Composition (Protocol Walker, Talker) -> typealias Worker = Walker & Talker
+
+## 5. Dependency Inversion
+- Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
+- Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
+- Inversion of Control Containers - Swinject 
