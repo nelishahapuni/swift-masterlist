@@ -2,6 +2,7 @@
 
 This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 
+- [Closures](#closures)
 - [Design Patterns](#design-patterns)
     1. [Factory](#1-factory-pattern)
     2. [Singleton](#2-singleton-pattern)
@@ -20,6 +21,21 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     3. [Liskov Substitution](#3-liskov-substitution)
     4. [Interface Segregation](#4-interface-segregation)
     5. [Dependency Inversion](#5-dependency-inversion)
+
+# Closures
+
+@escaping vs Non-escaping
+- Closure: code that's defined in one place, but executed later
+- Values they interact with should be in memory at that time
+- Ability to capture values could lead to memory leaks
+- After Swift 5.3, closures are non-escaping by default & you need to mark it with @escaping
+
+- Non-escaping: lifetime doesn't exceed func - no mem leaks (.map() or .filter())
+
+- Escaping: exec at later time, after func has returned
+- Used for network calls
+- Strong refs can cause retain cycles
+- Use weak or unknown 
 
 # Design Patterns
 
@@ -114,3 +130,4 @@ Class with a single shared instance, implemented with a static constant/method.
 - Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
 - Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
 - Inversion of Control Containers - Swinject 
+
