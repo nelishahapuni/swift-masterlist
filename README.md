@@ -8,6 +8,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 - [Struct VS Class](#struct-vs-class)
 - [Auto Layout](#auto-layout)
 - [MVVM](#mvvm)
+- [Clean Architecture](#clean-architecture)
 - [Navigation](#navigation)
 - [Life Cycle Methods](#life-cycle-methods)
 - [Generics](#generics)
@@ -115,6 +116,32 @@ Two Way Binding: V + VM
 - automatically reflect changes on each other
 - Ex. When ViewModel changes, view updates.
 - Observability: Combine Framework
+
+# Clean Architecture
+- architectural pattern to create *modular, scalable, and maintainable* software by separating concerns into layers
+
+1. Presentation Layer (UI)
+    - SwiftUI View + View Model = Presentation Logic
+    - Views: UI elements & user interactions
+    - View Models: presentation logic & communicate with use case layer
+
+2. Use Case Layer (Business Logic)
+    - use cases encapsulate business logic and rules
+    - independent of the UI and data source implementations
+    - interacts with the entities and calls the data source interfaces for data retrieval or persistence
+
+3. Entities:
+    - domain-specific business objects or models
+    - encapsulate the core data structures and business rules of the app
+
+4. Data Source Layer (Gateway):
+    - interfaces for data access, such as repositories or API clients
+    - implemented by concrete classes or services that interact with external data sources
+    - data source layer abstracts the details of data storage and retrieval
+
+- Dependency Rule:
+    - The direction of dependencies is strictly controlled, with the inner layers not depending on the outer layers
+    - Dependencies flow from the outer layers (UI) toward the inner layers (use cases, entities)
 
 # Navigation
 (UIKit)
