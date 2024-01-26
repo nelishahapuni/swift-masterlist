@@ -81,19 +81,21 @@ struct ContentView: View {
 ```
 - managing shared data and configuration by injecting values into views
 
-# Struct VS Class
+# Structs VS Classes
 Struct (Value Type)
-- Best to start with, if class not yet needed (SwiftUI)
-- Mutating func - change value of properties & write it back to the original structure
+- best to start with, if class not yet needed (SwiftUI)
+- mutating func - change value of properties & write it back to the original structure
 - properties of instance aren’t mutable (can’t be modified)
+- allocated on Stack
 
 Class
-- Inheritance, init/deinit, ARC
+- inheritance, init/deinit, ARC
 - properties of instance are mutable (can be modified)
+- allocated on Heap
 
 BOTH
-- Conform to protocols
-- Encapsulation & abstraction
+- conform to protocols
+- encapsulation & Abstraction
 
 # Auto Layout
 Importance:
