@@ -41,6 +41,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     3. [Liskov Substitution](#3-liskov-substitution)
     4. [Interface Segregation](#4-interface-segregation)
     5. [Dependency Inversion](#5-dependency-inversion)
+- [Asynchronous VS Synchronous](#asynchronous-vs-synchronous)
 
 # Optional
 - safe way of dealing with/potential nil (Swift is SAFE lang)
@@ -408,3 +409,6 @@ Polymorphism (animal: cat, dog)
 - Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
 - Inversion of Control Containers - Swinject 
 
+# Asynchronous VS Synchronous
+- Async is non-blocking, which means it will send multiple requests to a server. 
+- Sync is blocking it will only send the server one request at a time and wait for that request to be answered by the server.
