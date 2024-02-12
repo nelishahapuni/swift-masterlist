@@ -23,6 +23,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 - [Store & Persist Data](#store--persist-data)
 - [CI/CD Pipeline](#cdcd-pipeline)
 - [App Signing](#app-signing)
+- [Asynchronous VS Synchronous](#asynchronous-vs-synchronous)
 - [Design Patterns](#design-patterns)
     1. [Factory](#1-factory-pattern)
     2. [Singleton](#2-singleton-pattern)
@@ -41,7 +42,6 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     3. [Liskov Substitution](#3-liskov-substitution)
     4. [Interface Segregation](#4-interface-segregation)
     5. [Dependency Inversion](#5-dependency-inversion)
-- [Asynchronous VS Synchronous](#asynchronous-vs-synchronous)
 
 # Optional
 - safe way of dealing with/potential nil (Swift is SAFE lang)
@@ -282,6 +282,10 @@ Continuous Deployment
 - certificate issued by APPLE
 - only executable code is signed
 
+# Asynchronous VS Synchronous
+- Async is non-blocking, which means it will send multiple requests to a server. 
+- Sync is blocking it will only send the server one request at a time and wait for that request to be answered by the server.
+
 # Design Patterns
 
 ## 1. Factory Pattern
@@ -408,7 +412,3 @@ Polymorphism (animal: cat, dog)
 - Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
 - Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
 - Inversion of Control Containers - Swinject 
-
-# Asynchronous VS Synchronous
-- Async is non-blocking, which means it will send multiple requests to a server. 
-- Sync is blocking it will only send the server one request at a time and wait for that request to be answered by the server.
