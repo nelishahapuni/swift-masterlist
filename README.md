@@ -2,18 +2,25 @@
 
 This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 
-- [Optional](#optional)
+- [Swift](#swift)
+    - [Structs Classes ](#structs--classes)
+    - [Automatic Reference Counting](#automatic-reference-counting)
+    - [Optional](#optional)
+    - [Generics](#generics)
+- [UIKit](#uikit)
+    - [Auto Layout](#auto-layout)
+    - [Navigation](#navigation)
+    - [Life Cycle Methods](#life-cycle-methods)
 - [Combine](#combine)
-- [SwiftUI Property Wrappers](#swiftui-property-wrappers)
-- [Struct VS Class](#struct-vs-class)
-- [Auto Layout](#auto-layout)
-- [MVVM](#mvvm)
-- [Clean Architecture](#clean-architecture)
-- [Navigation](#navigation)
-- [Life Cycle Methods](#life-cycle-methods)
-- [Generics](#generics)
+- [SwiftUI](#swiftui)
+    - [Property Wrappers](#property-wrappers)
+- [Architectural Patterns](#architectural-patterns)
+    - [MVC](#mvc)
+    - [MVP](#mvp)
+    - [MVVM](#mvvm)
+    - [VIPER](#viper)
+    - [Clean Architecture](#clean-architecture)
 - [Closures](#closures)
-- [Automatic Reference Counting](#automatic-reference-counting)
 - [Weak VS Unowned](#weak-vs-unowned)
 - [Memory Leaks](#memory-leaks)
 - [Codable](#codable)
@@ -22,36 +29,123 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 - [Performance Optimization](#performance-optimization)
 - [Store & Persist Data](#store--persist-data)
 - [CI/CD Pipeline](#cdcd-pipeline)
+    - [Continuous Integration](#continuous-integration)
+    - [Continuous Deployment](#continuous-deployment)
 - [App Signing](#app-signing)
 - [Asynchronous VS Synchronous](#asynchronous-vs-synchronous)
 - [Design Patterns](#design-patterns)
-    1. [Factory](#1-factory-pattern)
-    2. [Singleton](#2-singleton-pattern)
-- [OOP](#oop)
+    - [Factory](#1-factory-pattern)
+    - [Singleton](#2-singleton-pattern)
+- [Object Oriented Programming](#object-oriented-programming)
+    - [Encapsulation](#encapsulation)
+    - [Inheritance](#inheritance)
+    - [Abstraction](#abstraction)
+    - [Polymorphism](#polymorphism)
 - [Data Structures](#data-structures)
+    - [Arrays](#arrays)
+    - [Linked Lists](#linked-lists)
+    - [Stacks](#stacks)
+    - [Queues](#queues)
+    - [Trees](#trees)
+    - [Graphs](#graphs)
+    - [Hash Tables](#hash-tables)
 - [Algorithms](#algorithms)
-    1. [Binary Search](#1-binary-search)
-    2. [Merge Search](#2-merge-search)
-    3. [Quick Sort](#3-quick-sort)
-    4. [Depth First Search](#4-depth-first-search)
-    5. [Breadth First Search](#5-breadth-first-search)
-    6. [Greedy Algorithm](#6-greedy-algorithm)
+    - [Binary Search](#1-binary-search)
+    - [Merge Search](#2-merge-search)
+    - [Quick Sort](#3-quick-sort)
+    - [Depth First Search](#4-depth-first-search)
+    - [Breadth First Search](#5-breadth-first-search)
+    - [Greedy Algorithm](#6-greedy-algorithm)
 - [SOLID Principles](#solid-principles)
-    1. [Single Responsibility Principle](#1-single-responsibility-principle)
-    2. [Open Closed Principle](#2-open-closed-principle)
-    3. [Liskov Substitution](#3-liskov-substitution)
-    4. [Interface Segregation](#4-interface-segregation)
-    5. [Dependency Inversion](#5-dependency-inversion)
+    - [Single Responsibility Principle](#1-single-responsibility-principle)
+    - [Open Closed Principle](#2-open-closed-principle)
+    - [Liskov Substitution](#3-liskov-substitution)
+    - [Interface Segregation](#4-interface-segregation)
+    - [Dependency Inversion](#5-dependency-inversion)
 
-# Optional
+# Swift
+
+Concepts related to the core swift language principles.
+
+## Structs & Classes
+
+### Struct
+- value type
+- best to start with, if class not yet needed (SwiftUI)
+- **mutating func** - change value of properties & write it back to the original structure
+- properties of instance aren't mutable (can't be modified)
+- alloc on Stack
+
+### Class
+- reference type
+- init/deinit, ARC
+- supports inheritance
+- properties of instance are mutable (can be modified)
+- alloc on Heap
+
+### Both
+- conform to protocols
+- encapsulation & Abstraction
+
+## Optional
 - safe way of dealing with/potential nil (Swift is SAFE lang)
 - If var nullable -> Optional (enum: none, some)
 
 - Safe: optional chaining, conditional binding, etc.
 - Unsafe: forced unwrapping 
 
+## Automatic Reference Counting
+- automatically tracks memory used by instances of classes, to prevent memory leaks
+- each instance has retain count, indicating # of refs that point to it
+- Add new ref, remove when ref isn't needed
+- Count is zero - instance is deallocated
+- Supports weak/unowned to prevent retain cycles
+
+## Generics
+- Parametrised Types for creating reusable funcs & structs that work with any Type
+- func swapValues<T>(_ a: inout T, _ b: inout T) { ... }
+- Often used w/collections: arrays, dictionaries, optionals, etc.
+- Type safety because type-related errors are caught at compile time
+- Use 'where' clause to add constraints, such as conforming to specific protocols
+- TODO: - Add "some" keyword
+
+# UIKit
+
+## Auto Layout
+- Adaptability to different screens: adjusts content dynamically for multiple devices
+
+- Contains - width, height, size, distance, etc.
+- Priority - satisfy higher priority first then lower
+
+- Layout Anchors (top, bottom, leading, trailing)
+- UIStackView - arrange in horizontal/vertical stacks
+
+## Navigation
+- UINavigationController manages a stack of view controllers, pushing or popping views
+- Storyboard VS Programmatic Segues
+
+### Coordinator Pattern
+- Coordinator Protocol - methods for starting, presenting, and finishing the flow
+- Coordinators create and present VCs & communicate between each other, pass data, trigger navigation, etc.
+- Benefits from Dependency Injection
+
+## Life Cycle Methods 
+(UIViewController)
+- init - method for instance 
+- viewDidLoad() - loaded in memory (one time setup, fetching data, init UI components)
+
+(Pull up Sheet)
+- viewWillAppear() - before view is about to appear on screen
+- viewDidAppear() - after the view has appeared
+
+- viewWillDisappear() - before about to disappear
+- viewDidDisappear() - after view has disappeared (save data)
+- deinit - when instance is deallocated
+
+SwiftUI: onAppear & onDisappear
+
 # Combine
-Publisher Subscriber Model
+- Publisher Subscriber Model
 - Reactive framework 
 - Asynchronous & event-driven code
 
@@ -65,7 +159,9 @@ Publisher Subscriber Model
 - observable properties 
 - automatic UI updates
 
-# SwiftUI Property Wrappers
+# SwiftUI 
+
+## Property Wrappers
 - @State, @Binding, and @ObservedObject to manage the state of views
 
 ```swift
@@ -82,33 +178,15 @@ struct ContentView: View {
 ```
 - managing shared data and configuration by injecting values into views
 
-# Structs VS Classes
-Struct (Value Type)
-- best to start with, if class not yet needed (SwiftUI)
-- mutating func - change value of properties & write it back to the original structure
-- properties of instance aren’t mutable (can’t be modified)
-- allocated on Stack
+# Architectural Patterns
 
-Class
-- inheritance, init/deinit, ARC
-- properties of instance are mutable (can be modified)
-- allocated on Heap
+## MVC
+// TODO: - add info
 
-BOTH
-- conform to protocols
-- encapsulation & Abstraction
+## MVP
+// TODO: - add info
 
-# Auto Layout
-Importance:
-- Adaptability to different screens: adjusts content dynamically for multiple devices
-
-- Contains - width, height, size, distance, etc.
-- Priority - satisfy higher priority first then lower
-
-- Layout Anchors (top, bottom, leading, trailing)
-- UIStackView - arrange in horizontal/vertical stacks
-
-# MVVM
+## MVVM
 - We want: separation of concerns, testability and reusability.
 
 - Model: Data (retrieval, manipulation, storage) & business logic 
@@ -120,7 +198,10 @@ Two Way Binding: V + VM
 - Ex. When ViewModel changes, view updates.
 - Observability: Combine Framework
 
-# Clean Architecture
+## VIPER
+// TODO: - add info
+
+## Clean Architecture
 - architectural pattern to create *modular, scalable, and maintainable* software by separating concerns into layers
 
 1. Presentation Layer (UI)
@@ -146,40 +227,6 @@ Two Way Binding: V + VM
     - The direction of dependencies is strictly controlled, with the inner layers not depending on the outer layers
     - Dependencies flow from the outer layers (UI) toward the inner layers (use cases, entities)
 
-# Navigation
-(UIKit)
-- UINavigationController manages a stack of view controllers, pushing or popping views
-- Storyboard VS Programmatic Segues
-
-Coordinator Pattern: 
-- Solves “Massive VC Problem” & is reusable
-- Coordinator Protocol - methods for starting, presenting, and finishing the flow
-- Coordinators create and present VCs & communicate between each other, pass data, trigger navigation, etc.
-- Benefits from Dependency Injection
-
-# Life Cycle Methods 
-(UIViewController)
-- init - method for instance 
-- viewDidLoad() - loaded in memory (one time setup, fetching data, init UI components)
-
-(Pull up Sheet)
-- viewWillAppear() - before view is about to appear on screen
-- viewDidAppear() - after the view has appeared
-
-- viewWillDisappear() - before about to disappear
-- viewDidDisappear() - after view has disappeared (save data)
-- deinit - when instance is deallocated
-
-SwiftUI: onAppear & onDisappear
-
-# Generics
-- Parametrised Types for creating reusable funcs & structs that work with any Type
-- Example: func swapValues<T>(_ a: inout T, _ b: inout T) { … }
-- Often used w/collections: arrays, dictionaries, optionals, etc.
-- Type safety because type-related errors are caught at compile time
-- Use 'where' clause to add constraints, such as conforming to specific protocols
-- TODO: - Add "some" keyword
-
 # Closures
 @escaping vs Non-escaping
 - Closure: code that's defined in one place, but executed later
@@ -194,13 +241,6 @@ SwiftUI: onAppear & onDisappear
 - Strong refs can cause retain cycles
 - Use weak or unknown 
 
-# Automatic Reference Counting
-- automatically tracks memory used by instances of classes, to prevent memory leaks
-- each instance has retain count, indicating # of refs that point to it
-- Add new ref, remove when ref isn't needed
-- Count is zero - instance is deallocated
-- Supports weak/unowned to prevent retain cycles
-
 # Weak VS Unowned
 - refer to an instance without keeping a strong ref
 - prevent retain cycles in closures or delegates
@@ -212,7 +252,7 @@ WEAK
 
 UNOWNED
 - when other instance has equal or longer lifespan
-- instance shouldn’t dealloc
+- instance shouldn't dealloc
 - implicitly unwrapped - if wrong CRASH
 
 - Top cause of leaks
@@ -244,17 +284,17 @@ Use cases:
 - await used inside async func - waits for the completion of async task (ex. Fetch data) 
 
 - Improved readability
-- Avoids “Callback Hell” (multiple nested asynchronous callbacks) 
+- Avoids "Callback Hell" (multiple nested asynchronous callbacks) 
 - Async funds can throws errors, can use do/catch to handle them
 
 # Performance Optimization
-- Lazy Loading - don’t init properties until they’re accessed (for resource-intensive operations)
+- Lazy Loading - don't init properties until they're accessed (for resource-intensive operations)
 - Async Programming (network calls, file operations, etc.)
 
 - Be mindful of Memory Usage, avoid strong reference cycles
 - Implement Caching
 - Reuse Resources whenever possible to avoid init/deinit
-- Only Load Data that’s currently needed
+- Only Load Data that's currently needed
 
 # Store & Persist Data
 - User Defaults - small data (user preferences, settings, etc.) that persists across launches
@@ -264,12 +304,13 @@ Use cases:
 - SQL Lite for complex data
 
 # CD/CD Pipeline
-(JENKINS)
-Continuous Integration 
+
+## Continuous Integration 
+- jenkins
 - Changes from multiple developers in shared repository (version control)
 - Automatically build & run tests on new changes
 
-Continuous Deployment
+## Continuous Deployment
 - Automatically deploy tested code changes to PROD environment 
 - Faster, more efficient, less error-prone release
 - Deployable Artefacts (.ipa build)
@@ -326,89 +367,104 @@ Class with a single shared instance, implemented with a static constant/method.
 - Pros: Global Access, Lazy Initialisation, Centralised Configuration (settings), Resource Sharing 
 - Cons: Anti-Pattern, Hard to test global & tightly coupled code, Race Conditions if there's thread conflicts
 
-# OOP
-Encapsulation
+# Object Oriented Programming
+
+## Encapsulation
 - Access controls (private, file private, public, etc.)
 - Getter and Setter
 - Property Observers (willSet, didSet)
 - internal (default) - available within module
 - final - prevent a class/method from being subclassed or overridden
 
-Inheritance
+## Inheritance
 - use methods & properties parent another class (using .super)
 - Initialiser inheritance to customise init the call super.init()
 - Overriding - subclass has own implementation of method
 - Designated (must!) & Convenience initialisers (additional in subclass)
 
-Abstraction (interface & protocols)
+## Abstraction
+- interface & protocols
 - Abstract Classes (protocols/classes with default implementation)
 - Abstract Props & Methods
 - Enums used to mimic abstract data types
 
-Polymorphism (animal: cat, dog) 
+## Polymorphism 
 - Method overriding (run) vs overloading (compile)
 - Dynamic Dispatch - implementation of a method to call at runtime
 - Protocol-Based Polymorphism
 
 # Data Structures
-- Arrays - constant-time access
-- Linked Lists - elem stored in nodes in sequence (singly/doubly)
-- Stacks - Last In, First Out - push, pop, peek (top elem) - call stack
-- Queues - First In, First Out - Enqueue, Dequeue, peek - task scheduling
-- Trees - hierarchical structure of nodes, each with/value & set of child nodes - Binary Trees
-- Graphs - Nodes connected by edges - shortest path
-- Hash Tables - maps keys to values w/functions - passwords, digital signature, caching, URL shortening, SHA-256 (cryptographic func)
+
+## Arrays 
+    - constant-time access
+## Linked Lists
+    - elem stored in nodes in sequence (singly/doubly)
+## Stacks 
+    - Last In, First Out 
+    - push, pop, peek (top elem) 
+    - call stack
+## Queues 
+    - First In, First Out 
+    - enqueue, dequeue, peek 
+    - task scheduling
+## Trees 
+    - hierarchical structure of nodes, each with/value & set of child nodes 
+    - Binary Trees
+## Graphs 
+    - Nodes connected by edges 
+## Hash Tables 
+    - maps keys to values w/functions 
+    - passwords, digital signature, caching, URL shortening, SHA-256 (cryptographic func)
 
 # Algorithms 
 // TODO: - Add code segments & more details
 
-## 1. Binary Search
+## Binary Search
 - Sorted list by dividing in half 
 - O(log n)
-## 2. Merge Sort 
+## Merge Sort 
 - divide in two halves, recursively sort & merge sorted halves 
 - O(n log n)
-## 3. Quick Sort 
+## Quick Sort 
 - select pivot, partition around it & recursively sort partitions 
 - O(n^2)
-## 4. Depth First Search 
+## Depth First Search 
 - search entire branch & then backtrack - traversing trees & graphs 
 - O(V + E)
-## 5. Breadth First Search
+## Breadth First Search
 - at current depth before moving to next
 - O(V + E)
-## 6. Greedy Algorithm 
+## Greedy Algorithm 
 - travelling salesman 
-- shortest path
+- graphs, shortest path
 
 # SOLID Principles
-// TODO: - Add code segments & more details
 
-## 1. Single Responsibility Principle
+## Single Responsibility Principle
 - Avoid Class Monoliths - clear class responsibilities - break down functionality into smaller classes
 - Decoupled code - easier to test
 - Maintainable - changes to one part is less likely to affect others
 
-## 2. Open Closed Principle 
+## Open Closed Principle 
 - Open for extension, closed for modification
-    1. Extensions to add functionality without modifying existing code
+- Extensions to add functionality without modifying existing code
     2. Dependency Injection - substituting dependencies without modifying class
     3. Abstraction & Inheritance - New functionality can be added by inheriting from parent
 
-## 3. Liskov Substitution 
+## Liskov Substitution 
 - objs of superclass should be replaceable w/ objs subclass without affecting the program 
     1. Subtype Conformance - subclass inherits from base class & conforms to its protocols
     2. Overriding Methods - overriden method in subclass should have at least same behaviour as base
     3. Maintains the same method signature when subclassing or conforming to protocols
 
-## 4. Interface Segregation 
+## Interface Segregation 
 - should conform only to necessary protocols 
     1. Smaller & Focused Protocols (Flyable - takeoff(), land(), fly()) Avoid Fat protocols
     2. Conform to multiple relevant protocols (Duck - Flyable, Swimmable)
     3. Provide Default Implementation when needed
     4. Protocol Composition (Protocol Walker, Talker) -> typealias Worker = Walker & Talker
 
-## 5. Dependency Inversion
-- Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
-- Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
-- Inversion of Control Containers - Swinject 
+## Dependency Inversion
+    - Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
+    - Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
+    - Inversion of Control Containers - Swinject 
