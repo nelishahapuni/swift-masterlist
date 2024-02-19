@@ -3,7 +3,10 @@
 This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 
 - [Swift](#swift)
-    - [Structs Classes ](#structs--classes)
+    - [Structs Classes Actors](#structs-classes-actors)
+        - [Structs](#structs)
+        - [Classes](#classes)
+        - [Actors](#actors)
     - [Automatic Reference Counting](#automatic-reference-counting)
     - [Optional](#optional)
     - [Generics](#generics)
@@ -11,6 +14,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Auto Layout](#auto-layout)
     - [Navigation](#navigation)
     - [Life Cycle Methods](#life-cycle-methods)
+    - [UIGestureRecognizer](#uigesturerecognizer)
 - [Combine](#combine)
 - [SwiftUI](#swiftui)
     - [Property Wrappers](#property-wrappers)
@@ -34,8 +38,12 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 - [App Signing](#app-signing)
 - [Asynchronous VS Synchronous](#asynchronous-vs-synchronous)
 - [Design Patterns](#design-patterns)
-    - [Factory](#1-factory-pattern)
-    - [Singleton](#2-singleton-pattern)
+    - [Design Pattern Classes](#design-pattern-classes)
+    - [Observer](#observer)
+    - [Command](#command)
+    - [Builder](#builder)
+    - [Factory](#factory)
+    - [Singleton](#singleton)
 - [Object Oriented Programming](#object-oriented-programming)
     - [Encapsulation](#encapsulation)
     - [Inheritance](#inheritance)
@@ -67,16 +75,16 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 
 Concepts related to the core swift language principles.
 
-## Structs & Classes
+## Structs Classes Actors
 
-### Struct
-- value type
+### Structs
+- value type, thread safe
 - best to start with, if class not yet needed (SwiftUI)
 - **mutating func** - change value of properties & write it back to the original structure
 - properties of instance aren't mutable (can't be modified)
 - alloc on Stack
 
-### Class
+### Classes
 - reference type
 - init/deinit, ARC
 - supports inheritance
@@ -86,6 +94,12 @@ Concepts related to the core swift language principles.
 ### Both
 - conform to protocols
 - encapsulation & Abstraction
+
+### Actor
+(Swift 5.5)
+- reference type, thread safe
+- prevents data races, since all mutations will be performed serially, one after the other
+- no subclassing
 
 ## Optional
 - safe way of dealing with/potential nil (Swift is SAFE lang)
@@ -102,23 +116,27 @@ Concepts related to the core swift language principles.
 - Supports weak/unowned to prevent retain cycles
 
 ## Generics
-- Parametrised Types for creating reusable funcs & structs that work with any Type
-- func swapValues<T>(_ a: inout T, _ b: inout T) { ... }
+Parametrised Types for creating reusable funcs & structs that work with any Type
+    
+    func swapValues(_ a: inout T, _ b: inout T) { ... }
+
 - Often used w/collections: arrays, dictionaries, optionals, etc.
-- Type safety because type-related errors are caught at compile time
-- Use 'where' clause to add constraints, such as conforming to specific protocols
-- TODO: - Add "some" keyword
+- **Type safe** - type-related errors caught at compile time
+
+- Use **where** clause to add constraints, such as conforming to specific protocols
+- Use **some** for more readable parameters in func declarations, instead of using <T: ...>
 
 # UIKit
 
 ## Auto Layout
-- Adaptability to different screens: adjusts content dynamically for multiple devices
+Adaptability to different screens: adjusts content dynamically for multiple devices
 
-- Contains - width, height, size, distance, etc.
-- Priority - satisfy higher priority first then lower
+    - Constrains - width, height, size, distance, etc.
+    - Priority - satisfy higher priority first then lower
+    - Layout Anchors (top, bottom, leading, trailing)
+    - Bounds (size) vs Frame (rotated/expanded)
 
-- Layout Anchors (top, bottom, leading, trailing)
-- UIStackView - arrange in horizontal/vertical stacks
+    - UIStackView - arrange in horizontal/vertical stacks
 
 ## Navigation
 - UINavigationController manages a stack of view controllers, pushing or popping views
@@ -143,6 +161,10 @@ Concepts related to the core swift language principles.
 - deinit - when instance is deallocated
 
 SwiftUI: onAppear & onDisappear
+
+## UIGestureRecognizer
+
+// TODO 
 
 # Combine
 - Publisher Subscriber Model
@@ -202,30 +224,29 @@ Two Way Binding: V + VM
 // TODO: - add info
 
 ## Clean Architecture
-- architectural pattern to create *modular, scalable, and maintainable* software by separating concerns into layers
+Modular, scalable, and maintainable software by separating into *layers*
 
-1. Presentation Layer (UI)
+- Presentation Layer (UI)
     - SwiftUI View + View Model = Presentation Logic
     - Views: UI elements & user interactions
-    - View Models: presentation logic & communicate with use case layer
+    - View Model: presentation logic & communicate with use case layer
 
-2. Use Case Layer (Business Logic)
-    - use cases encapsulate business logic and rules
-    - independent of the UI and data source implementations
+- Use Case Layer (Business Logic)
+    - encapsulates business logic & rules, independent of the UI & data source implementation
     - interacts with the entities and calls the data source interfaces for data retrieval or persistence
 
-3. Entities:
+- Entities
     - domain-specific business objects or models
     - encapsulate the core data structures and business rules of the app
 
-4. Data Source Layer (Gateway):
-    - interfaces for data access, such as repositories or API clients
-    - implemented by concrete classes or services that interact with external data sources
+- Data Source Layer (Gateway)
+    - Interfaces for data access: repositories, API clients
+    - Implemented by classes or services that interact w/external data sources
     - data source layer abstracts the details of data storage and retrieval
 
-- Dependency Rule:
-    - The direction of dependencies is strictly controlled, with the inner layers not depending on the outer layers
-    - Dependencies flow from the outer layers (UI) toward the inner layers (use cases, entities)
+- Dependency Rule
+    - Dependencies flow: from outer layers (UI) towards the inner layers (use cases, entities)
+    - direction of dependencies is strictly controlled, inner layers not dependent on the outer layers
 
 # Closures
 @escaping vs Non-escaping
@@ -324,12 +345,34 @@ Use cases:
 - only executable code is signed
 
 # Asynchronous VS Synchronous
-- Async is non-blocking, which means it will send multiple requests to a server. 
-- Sync is blocking it will only send the server one request at a time and wait for that request to be answered by the server.
+- Async 
+    - non-blocking - sends mult. requests to a server
+    - multi-thread - operations/programs run in parallel
+- Sync 
+    - blocking - sends 1 request at a time & wait for that request to be answered by the server
+    - single-thread - only 1 operation/program run at a time
 
 # Design Patterns
 
-## 1. Factory Pattern
+## Design Pattern Classes
+
+- Behavioral - efficient communication patterns between obj & entities 
+- Creational - create new objects easily & safely with flexibility
+- Structural - streamlined ways to correlate relationships between obj & entities 
+
+## Observer 
+- obj with dependents (observers)
+- one to many relationship (combine, swiftUI, notification)
+
+## Command 
+- sender-receiver (make an order) 
+- queue tasks, tracking operation history, etc.
+
+## Builder 
+- add methods (burgers - tomatoes, mayo, etc) 
+- similar to SwiftUI
+
+## Factory
 - Pattern for creating multiple different instances of a class & allowing the subclasses to alter the type of instances that will be created
 
 ```swift
@@ -359,7 +402,7 @@ let latteFactory = LatteFactory()
 makeAndServeCoffee(factory: latteFactory, name: "Latte")
 ```
 
-## 2. Singleton Pattern
+## Singleton Pattern
 
 Class with a single shared instance, implemented with a static constant/method.
 - Child class can't override static var or func.
