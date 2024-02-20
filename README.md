@@ -95,6 +95,9 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Interface Segregation](#4-interface-segregation)
     - [Dependency Inversion](#5-dependency-inversion)
 - [Best Practices](#best-practices)
+- [Databases](#databases)
+    - [Relational](#relational)
+    - [Non-Relational](#non-relational)
 
 # Swift
 
@@ -701,9 +704,9 @@ let four = 2 + 2 // 4
     4. Protocol Composition (Protocol Walker, Talker) -> typealias Worker = Walker & Talker
 
 ## Dependency Inversion
-    - Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
-    - Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
-    - Inversion of Control Containers - Swinject 
+- Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
+- Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
+- Inversion of Control Containers - Swinject 
 
 # Best Practices
 - KISS (keep it stupid simple), DRY (dont repeat yourself)
@@ -713,3 +716,17 @@ let four = 2 + 2 // 4
 - use weak, unowned to prevent mem leaks
 - use protocols for abstract interfaces
 - documentation & comments
+
+# Databases
+
+## Relational
+- structured tables (rows/columns)
+- each table is an entity - relatoinship b/w entities w/foreign keys
+- ACID transactions (Atomicity, Consistency, Isolation, Durability) - data integrity & reliability
+- use SQL (Structured Query Language)
+- used for transactional systems, financial & enterprise applications
+
+## Non-Relational
+- flexible data models (key: value, document, graph, etc.)
+- easy horizontal scalability - distributing data across nodes
+- used for real-time analytics, social networks, content management, distributed systems
