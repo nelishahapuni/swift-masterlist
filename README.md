@@ -94,6 +94,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Liskov Substitution](#3-liskov-substitution)
     - [Interface Segregation](#4-interface-segregation)
     - [Dependency Inversion](#5-dependency-inversion)
+- [Best Practices](#best-practices)
 
 # Swift
 
@@ -103,8 +104,7 @@ Concepts related to the core swift language principles.
 
 ### Structs
 - value type, thread safe
-- best to start with, if class not yet needed (SwiftUI)
-- **mutating func** - change value of properties & write it back to the original structure
+- copy-on-write - copy will be made only if contents are modified, otherwise ref
 - properties of instance aren't mutable (can't be modified)
 - alloc on Stack
 
@@ -704,3 +704,12 @@ let four = 2 + 2 // 4
     - Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
     - Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
     - Inversion of Control Containers - Swinject 
+
+# Best Practices
+- KISS (keep it stupid simple), DRY (dont repeat yourself)
+- Prefer Structs over Classes
+- prefer immutable values (let)
+- use Enums for States & Error Handling
+- use weak, unowned to prevent mem leaks
+- use protocols for abstract interfaces
+- documentation & comments
