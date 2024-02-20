@@ -36,7 +36,8 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
         - [Attributes of Queues](#attributes-of-queues)
         - [Target Queues](#target-queues)
         - [Auto Release Frequency](#auto-release-frequency)
-    - [Dispatch Group](#dispatch-group)
+        - [Dispatch Group](#dispatch-group)
+        - [Dispatch Work Item](#dispatch-work-item)
     - [Async Await](#async-await)
 - [Performance Optimization](#performance-optimization)
 - [Store & Persist Data](#store--persist-data)
@@ -66,6 +67,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Inheritance](#inheritance)
     - [Abstraction](#abstraction)
     - [Polymorphism](#polymorphism)
+- [Functional Programming](#functional-programming)
 - [Data Structures](#data-structures)
     - [Arrays](#arrays)
     - [Linked Lists](#linked-lists)
@@ -372,16 +374,32 @@ Additional Queues:
 - .workitem - individual auto-release pool
 - .never - never setup an individual auto release pool
 
-## Dispatch Group
+### Dispatch Group
+- exec mult tasks together (ex.: API calls, download mult images) 
+- wait for all tasks to be completed
+
+Functions: 
+- .enter() - task added to DG
+- .leave() - called when exec completes
+- .wait() - wait until task complete & dont proceed until done (NEVER use on main)
+- .notify() -finish when num of .enter() equals num .leave()
+
+- Ex: Splash screen 
+.enter() before API call block
+.leave() when task completes (.sink)
+.notify() will be called - stop animation & nav to next screen
+
+### Dispatch Work Item 
+- flexibility to cancel task if exec hasnt started
+- can dispatch on both DispatchQueue & DispatchGroup
 
 ## Async Await
 (iOS 15)
-- async return a value wrapped in a Task (SwiftUI)
-- await used inside async func - waits for the completion of async task (ex. Fetch data) 
-
-- Improved readability
-- Avoids "Callback Hell" (multiple nested asynchronous callbacks) 
-- Async funds can throws errors, can use do/catch to handle them
+- 'async' keyword on funcs for async operations
+- 'await' inside an async func suspends exec until result of another async operation is available (more sequential & readable)
+- don't need callbacks & completion handlers, no nesting & "callback hell"
+- try-catch for error handling
+- used within Task 
 
 # Performance Optimization
 - Lazy Loading - don't init properties until they're accessed (for resource-intensive operations)
@@ -535,6 +553,31 @@ Class with a single shared instance, implemented with a static constant/method.
 - Method overriding (run) vs overloading (compile)
 - Dynamic Dispatch - implementation of a method to call at runtime
 - Protocol-Based Polymorphism
+
+# Functional Programming
+- declarative, pure functions
+- given same inputs - returns the same output
+- no side effects (unpredicable behavior): input/output, throwing errors, network calls, etc
+- higher Order Functions: .map(), .filter(), .reduce()
+
+Principles:
+- Immutability - declared values are unchanged
+- Disciplined state - no shared state & mutable data
+- Referential transparency - if you replace a func call with its return value, behavior should be same 
+
+```swift
+func two() {
+    return 2
+}
+
+let four = two() + two() // 4
+// or
+let four = two() + 2 // 4
+// or
+let four = 2 + two() // 4
+// or
+let four = 2 + 2 // 4
+```
 
 # Data Structures
 
