@@ -10,12 +10,15 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Automatic Reference Counting](#automatic-reference-counting)
     - [Optional](#optional)
     - [Generics](#generics)
+    - [Closures](#closures)
+    - [Weak VS Unowned](#weak-vs-unowned)
+    - [Memory Leaks](#memory-leaks)
+    - [Codable](#codable)
 - [UIKit](#uikit)
     - [Auto Layout](#auto-layout)
     - [Navigation](#navigation)
     - [Life Cycle Methods](#life-cycle-methods)
     - [UIGestureRecognizer](#uigesturerecognizer)
-- [Combine](#combine)
 - [SwiftUI](#swiftui)
     - [Property Wrappers](#property-wrappers)
 - [Architectural Patterns](#architectural-patterns)
@@ -24,19 +27,33 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [MVVM](#mvvm)
     - [VIPER](#viper)
     - [Clean Architecture](#clean-architecture)
-- [Closures](#closures)
-- [Weak VS Unowned](#weak-vs-unowned)
-- [Memory Leaks](#memory-leaks)
-- [Codable](#codable)
-- [Grand Central Dispatch](#grand-central-dispatch)
-- [Async Await](#async-await)
+- [Concurrency](#concurrency)
+    - [Grand Central Dispatch vs Manual Thread Creation](#grand-central-dispatch-vs-manual-thread-creation)
+    - [Asynchronous vs Synchronous](#asynchronous-vs-synchronous)
+    - [Serial vs Concurrent Queue](#serial-vs-concurrent-queue)
+    - [Dispatch Queues](#dispatch-queues)
+        - [Quality of Service](#quality-of-service)
+        - [Attributes of Queues](#attributes-of-queues)
+        - [Target Queues](#target-queues)
+        - [Auto Release Frequency](#auto-release-frequency)
+    - [Dispatch Group](#dispatch-group)
+    - [Async Await](#async-await)
 - [Performance Optimization](#performance-optimization)
 - [Store & Persist Data](#store--persist-data)
 - [CI/CD Pipeline](#cdcd-pipeline)
     - [Continuous Integration](#continuous-integration)
     - [Continuous Deployment](#continuous-deployment)
 - [App Signing](#app-signing)
-- [Asynchronous VS Synchronous](#asynchronous-vs-synchronous)
+- [Frameworks](#frameworks)
+    - [Combine](#combine)
+    - [RxSwift](#rxswift)
+    - [AVFoundation](#avfoundation)
+    - [Core Location](#core-location)
+    - [Charts](#charts)
+- [Extensions](#extensions)
+    - [Action](#action)
+    - [Share](#share)
+    - [Notification Service](#notification-service)
 - [Design Patterns](#design-patterns)
     - [Design Pattern Classes](#design-pattern-classes)
     - [Observer](#observer)
@@ -63,7 +80,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Quick Sort](#3-quick-sort)
     - [Depth First Search](#4-depth-first-search)
     - [Breadth First Search](#5-breadth-first-search)
-    - [Greedy Algorithm](#6-greedy-algorithm)
+    - [Greedy Algorithms](#6-greedy-algorithms)
 - [SOLID Principles](#solid-principles)
     - [Single Responsibility Principle](#1-single-responsibility-principle)
     - [Open Closed Principle](#2-open-closed-principle)
@@ -126,17 +143,58 @@ Parametrised Types for creating reusable funcs & structs that work with any Type
 - Use **where** clause to add constraints, such as conforming to specific protocols
 - Use **some** for more readable parameters in func declarations, instead of using <T: ...>
 
+# Closures
+@escaping vs Non-escaping
+- Closure: code that's defined in one place, but executed later
+- Values they interact with should be in memory at that time
+- Ability to capture values could lead to memory leaks
+- After Swift 5.3, closures are non-escaping by default & you need to mark it with @escaping
+
+- Non-escaping: lifetime doesn't exceed func - no mem leaks (.map() or .filter())
+
+- Escaping: exec at later time, after func has returned
+- Used for network calls
+- Strong refs can cause retain cycles
+- Use weak or unknown 
+
+# Weak VS Unowned
+- refer to an instance without keeping a strong ref
+- prevent retain cycles in closures or delegates
+
+WEAK
+-  used when the other instance has shorter lifespan
+- the instance MIGHT dealloc before WEAK ref is used
+- safely stored as OPTIONAL 
+
+UNOWNED
+- when other instance has equal or longer lifespan
+- instance shouldn't dealloc
+- implicitly unwrapped - if wrong CRASH
+
+- Top cause of leaks
+
+# Memory Leaks
+- If used memory exceeds allocated app memory - crash
+- Retain cycles: closures or delegates
+- Xcode Instruments > Leaks
+
+# Codable 
+- Protocol used to encode/decode data into external formats (eg. JSON)
+- JSONEncoder (eg. into String)
+- JSONDecoder (eg. Into JSON)
+- Use CodingkKeys to customise (eg. The name of the property)
+
 # UIKit
 
 ## Auto Layout
 Adaptability to different screens: adjusts content dynamically for multiple devices
 
-    - Constrains - width, height, size, distance, etc.
-    - Priority - satisfy higher priority first then lower
-    - Layout Anchors (top, bottom, leading, trailing)
-    - Bounds (size) vs Frame (rotated/expanded)
+- Constrains - width, height, size, distance, etc.
+- Priority - satisfy higher priority first then lower
+- Layout Anchors (top, bottom, leading, trailing)
+- Bounds (size) vs Frame (rotated/expanded)
 
-    - UIStackView - arrange in horizontal/vertical stacks
+- UIStackView - arrange in horizontal/vertical stacks
 
 ## Navigation
 - UINavigationController manages a stack of view controllers, pushing or popping views
@@ -163,23 +221,11 @@ Adaptability to different screens: adjusts content dynamically for multiple devi
 SwiftUI: onAppear & onDisappear
 
 ## UIGestureRecognizer
-
-// TODO 
-
-# Combine
-- Publisher Subscriber Model
-- Reactive framework 
-- Asynchronous & event-driven code
-
-- Sink - connects P&S & receives the value in the closure
-- Cancellables - breaks connection between P&S
-- Catch - handle errors from publisher
-- Receive (on main thread)
-
-@Published wrapper (SwiftUI) 
-- declarative programming
-- observable properties 
-- automatic UI updates
+- Add custom recognizer of pinches, drags, taps, etc. to regular views (other than buttons)
+- add target & action - updates when gesture starts, changes, or ends
+- add gesture rec. to view (one and only one)
+- handlePinch(_:) and handleRotate(_:)
+- UIPanGestureRecognizer, UIPinchGestureRecognizer, UIRotationGestureRecognizer
 
 # SwiftUI 
 
@@ -248,58 +294,87 @@ Modular, scalable, and maintainable software by separating into *layers*
     - Dependencies flow: from outer layers (UI) towards the inner layers (use cases, entities)
     - direction of dependencies is strictly controlled, inner layers not dependent on the outer layers
 
-# Closures
-@escaping vs Non-escaping
-- Closure: code that's defined in one place, but executed later
-- Values they interact with should be in memory at that time
-- Ability to capture values could lead to memory leaks
-- After Swift 5.3, closures are non-escaping by default & you need to mark it with @escaping
+# Concurrency
+- Exec mult instructions simultaneously
+- 2 queues -> 1 counter, 
+- achieved by Time Slicing & Context Switching 
 
-- Non-escaping: lifetime doesn't exceed func - no mem leaks (.map() or .filter())
+Parallelism:
+- using multiple resources to solve problems by breaking them down
+- 2 queues -> 2 counters (more resources)
 
-- Escaping: exec at later time, after func has returned
-- Used for network calls
-- Strong refs can cause retain cycles
-- Use weak or unknown 
 
-# Weak VS Unowned
-- refer to an instance without keeping a strong ref
-- prevent retain cycles in closures or delegates
+### Grand Central Dispatch vs Manual Thread Creation
+Manually:
+- more control: start, delay, cancel, etc. 
+- init Thread obj 
+- responsibility: dealloc, resources access, mem leaks, etc.
 
-WEAK
--  used when the other instance has shorter lifespan
-- the instance MIGHT dealloc before WEAK ref is used
-- safely stored as OPTIONAL 
+Grand Central Dispatch:
+- queue API - start tasks in FIFO order
+- decides which thread should exec task 
+- chooses appropriate dispatch queue
+- app can put task in queue SYNC or ASYNC
 
-UNOWNED
-- when other instance has equal or longer lifespan
-- instance shouldn't dealloc
-- implicitly unwrapped - if wrong CRASH
+Order vs Manner of Exec
+- Order: decides if task will be picked up serially or concurrently
+- Manner: how the job will be exec (will it block current exec?)
 
-- Top cause of leaks
+## Asynchronous vs Synchronous
+- Async: don't block current exec, new task will be completed later
+- Sync: block current exec until new task is completed
 
-# Memory Leaks
-- If used memory exceeds allocated app memory - crash
-- Retain cycles: closures or delegates
-- Xcode Instruments > Leaks
+## Serial vs Concurrent Queue
+- Serial: 1 task at a time
+- Concurrent: exec mult tasks simultaneously, but tasks will be dequeued serially FIFO
 
-# Codable 
-- Protocol used to encode/decode data into external formats (eg. JSON)
-- JSONEncoder (eg. into String)
-- JSONDecoder (eg. Into JSON)
-- Use CodingkKeys to customise (eg. The name of the property)
+Differences:
+- Serial/Concurrent affects destination queue TO which you are dispatching.
+- Sync/Async affects the current thread FROM which you are dispatching
 
-# Grand Central Dispatch
-- Apple concurrency framework for executing multiple tasks simultaneously 
+## Dispatch Queues
+- 3 Types of Queues: 
+    - Main Queues (system)
+        - Serial
+        - Uses main thread (only one that has access) 
+        - UIKit tied to main thread, waits for user interactions
+        - introduce additional BG threads to handle service calls to not freeze the UI
+    - Global Concurrent Queues (system)
+        - Concurrent
+        - Do not use main thread
+        - Priorities decided through QoS
+    - Custom Queues Queues
 
-Use cases:
-- Background Tasks - network calls, data processing, not blocking the main thread 
-- Parallel Processing - multiple independent tasks to improve performance
+### Quality of Service 
+- tells the system how to utilize the resources in system
+- User Interactive (Highest Priority - finish first) - involved in updating UI (ex. Animations)
+- User Initiated - data required for immediate results (ex. scrolling table view)
+- Utility - Long running task, low priority (downloading)
+- Background (Lowest Priority - finish last) - not visible to user, creating backups, restoring from server, etc.
 
-- Main thread - Async UI updates to prevent freezing
-- Dispatch Groups - used to monitor multiple asynchronous tasks & wait until they finish
+Additional Queues:
+- QoS is between user initiated & utility
+- No QoS info 
 
-# Async Await
+### Attributes of Queues
+- .concurrent (queue is serial by default)
+- .initiallyInactive - exec of task dispatched to queue should start later time (call .activate() when you wanna start it)
+
+### Target Queues
+- queue that your custom queue will use BTS
+- priority is inherited from its target queue
+- if target priority queue not specified, then it's "default priority global queue"
+- How to use: u have 2 separate serial queues w/many tasks - create a target queue to make tasks serial together (serial behaviour is inherited)
+
+### Auto Release Frequency
+- requency at with which the dispatch queue will auto-release the resources being used
+- .inherit - inherit from target queue (default behaviour)
+- .workitem - individual auto-release pool
+- .never - never setup an individual auto release pool
+
+## Dispatch Group
+
+## Async Await
 (iOS 15)
 - async return a value wrapped in a Task (SwiftUI)
 - await used inside async func - waits for the completion of async task (ex. Fetch data) 
@@ -344,13 +419,38 @@ Use cases:
 - certificate issued by APPLE
 - only executable code is signed
 
-# Asynchronous VS Synchronous
-- Async 
-    - non-blocking - sends mult. requests to a server
-    - multi-thread - operations/programs run in parallel
-- Sync 
-    - blocking - sends 1 request at a time & wait for that request to be answered by the server
-    - single-thread - only 1 operation/program run at a time
+# Frameworks
+
+## Combine
+- Publisher Subscriber Model
+- Reactive framework 
+- Asynchronous & event-driven code
+
+- Sink - connects P&S & receives the value in the closure
+- Cancellables - breaks connection between P&S
+- Catch - handle errors from publisher
+- Receive (on main thread)
+
+@Published wrapper (SwiftUI) 
+- declarative programming
+- observable properties 
+- automatic UI updates
+
+## RxSwift
+ TODO
+## AVFoundation
+
+## Core Location
+
+## Charts
+
+# Extensions
+
+## Action
+
+## Share
+
+## Notification Service
 
 # Design Patterns
 
@@ -455,31 +555,41 @@ Class with a single shared instance, implemented with a static constant/method.
     - Binary Trees
 ## Graphs 
     - Nodes connected by edges 
+## Heap
+    TODO
 ## Hash Tables 
     - maps keys to values w/functions 
     - passwords, digital signature, caching, URL shortening, SHA-256 (cryptographic func)
 
 # Algorithms 
-// TODO: - Add code segments & more details
 
 ## Binary Search
-- Sorted list by dividing in half 
+- D&C, Sorted list then divide in half until target reached
 - O(log n)
 ## Merge Sort 
-- divide in two halves, recursively sort & merge sorted halves 
+- D&C, recursively divide in halves, sort halves independently & merge sorted halves 
 - O(n log n)
 ## Quick Sort 
-- select pivot, partition around it & recursively sort partitions 
+- D&C, select pivot, partition around it, recursively sort partitions & combine
 - O(n^2)
+
+## Introsort
+(swift)
+- hybrid alg 
+- begins w/recursive Quicksort
+- falls back of Heapsort if certain depth level is reached (max = 2 * log(n))
+- optimize more w/Insertion Sort if n small
+- comparison alg
+
 ## Depth First Search 
 - search entire branch & then backtrack - traversing trees & graphs 
 - O(V + E)
 ## Breadth First Search
 - at current depth before moving to next
 - O(V + E)
-## Greedy Algorithm 
-- travelling salesman 
-- graphs, shortest path
+## Greedy Algorithms
+- Dijkstra's (dykestra's) alg - shortest path to netx node
+- Fractional Knapsack alg - find profit/weight ratio, sort by ratio, add until full
 
 # SOLID Principles
 
