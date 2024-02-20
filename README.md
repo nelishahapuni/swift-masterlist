@@ -48,6 +48,10 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 - [Frameworks](#frameworks)
     - [Combine](#combine)
     - [RxSwift](#rxswift)
+        - [Observable](#observable)
+        - [Subject](#subject)
+        - [Ignoring Operator](#ignoring-operator)
+        - [Skipping Operator](#skipping-operator)
     - [AVFoundation](#avfoundation)
     - [Core Location](#core-location)
     - [Charts](#charts)
@@ -67,6 +71,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Inheritance](#inheritance)
     - [Abstraction](#abstraction)
     - [Polymorphism](#polymorphism)
+- [Protocol Oriented Programming](#protocol-oriented-programming)
 - [Functional Programming](#functional-programming)
 - [Data Structures](#data-structures)
     - [Arrays](#arrays)
@@ -233,6 +238,11 @@ SwiftUI: onAppear & onDisappear
 
 ## Property Wrappers
 - @State, @Binding, and @ObservedObject to manage the state of views
+
+- @Published wrapper (SwiftUI) 
+- declarative programming
+- observable properties 
+- automatic UI updates
 
 ```swift
 class MyViewModel: ObservableObject {
@@ -449,13 +459,33 @@ Functions:
 - Catch - handle errors from publisher
 - Receive (on main thread)
 
-@Published wrapper (SwiftUI) 
-- declarative programming
-- observable properties 
-- automatic UI updates
-
 ## RxSwift
- TODO
+- ibrary for async & event-based code
+- using observable sequences & functional operators
+- parametrized exec w/schedulers
+
+### Observable
+- when there's a subscriber, it sends events via emitting
+- emits a 'next' event w/element & continues until success/error
+- call dispose() to stop emitting - auto prevents mem leak
+
+### Subject
+- can be Observable or Observer
+- PublishSubject - start empty, only emit new element to subscribers
+- BehaviorSubject - start w/init value, replay it or latest element to new subscribers
+- ReplaySubject - iniy w/buffer size, will maintain a buffer of elements up to that size & reply it to next subscribers
+
+### Ignoring Operator
+- ignores all .next event elements
+- use if only need .completed/.error
+- .ignoreElements() on subj - subject.ignoreElements().subscribe { ... }.disposed(by: disposeBag)
+- .elementAt(n) - returns elem at n
+
+### Skipping Operator
+- .skip(n) - ignore elem at index n
+- .skipWhile(condition) - skip if true
+- .skipUntil(trigger) - skip until trigger is activated
+
 ## AVFoundation
 
 ## Core Location
@@ -554,6 +584,11 @@ Class with a single shared instance, implemented with a static constant/method.
 - Dynamic Dispatch - implementation of a method to call at runtime
 - Protocol-Based Polymorphism
 
+# Protocol Oriented Programming
+- composition & protocol comformance over inheritence
+- flexible, allows to mix-and-match protocols, reusable
+- protocol extensions allow for default implementations & adding functionality
+
 # Functional Programming
 - declarative, pure functions
 - given same inputs - returns the same output
@@ -582,7 +617,12 @@ let four = 2 + 2 // 4
 # Data Structures
 
 ## Arrays 
-    - constant-time access
+    - list of ordered items
+    - access: constant-time access w/index O(1)
+## Sets
+    - unordered list of unique elements
+## Tuples
+    - compound value w/diffent type of values 
 ## Linked Lists
     - elem stored in nodes in sequence (singly/doubly)
 ## Stacks 
