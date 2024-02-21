@@ -3,10 +3,9 @@
 This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 
 - [Swift](#swift)
-    - [Structs Classes Actors](#structs-classes-actors)
-        - [Structs](#structs)
-        - [Classes](#classes)
-        - [Actors](#actors)
+    - [Structs](#structs)
+    - [Classes](#classes)
+    - [Actors](#actors)
     - [Automatic Reference Counting](#automatic-reference-counting)
     - [Optional](#optional)
     - [Generics](#generics)
@@ -14,6 +13,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Weak VS Unowned](#weak-vs-unowned)
     - [Memory Leaks](#memory-leaks)
     - [Codable](#codable)
+    - [Caching](#caching)
 - [UIKit](#uikit)
     - [Auto Layout](#auto-layout)
     - [Navigation](#navigation)
@@ -38,6 +38,8 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
         - [Auto Release Frequency](#auto-release-frequency)
         - [Dispatch Group](#dispatch-group)
         - [Dispatch Work Item](#dispatch-work-item)
+    - [Deadlock](#deadlock)
+    - [Race Conditions](#race-conditions)
     - [Async Await](#async-await)
 - [Performance Optimization](#performance-optimization)
 - [Store & Persist Data](#store--persist-data)
@@ -103,30 +105,49 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 
 Concepts related to the core swift language principles.
 
-## Structs Classes Actors
-
-### Structs
-- value type, thread safe
-- copy-on-write - copy will be made only if contents are modified, otherwise ref
+## Structs
+- value type, mutating keyword
+- can extend, not inherit
+- Copy on write: copy only if contents are modified, otherwise ref
 - properties of instance aren't mutable (can't be modified)
-- alloc on Stack
+- static method dispatch
+- has default (memberwise) initializer - if no private properties
+- init in extension calls default init (acts like convenience)
+- mock inheritence = protocol + ext + default implem of protocol methods
 
-### Classes
+Alloc on Stack:
+- Thread Safe: each thread has its own stack
+- memory req calc at compile time
+- faster alloc/dealloc: only move stack pointer (single instruction)
+
+## Classes
 - reference type
-- init/deinit, ARC
-- supports inheritance
+- can .deinit()
+- inheritance
 - properties of instance are mutable (can be modified)
-- alloc on Heap
+- dynamic method dispatch
+- required & convenient init
+- use === to compare if ref/obj/address identitical
 
-### Both
-- conform to protocols
-- encapsulation & Abstraction
+Alloc on Heap:
+- Thead Unsafe: global mem space needed, not exclusive to any thread
+- mem size calc at run-time (mem leaks)
+- lifetime can't be predicted
+- slower alloc/dealloc: entire heap is recalc
 
-### Actor
+Use cases:
+- Obj-C interoperability
+- need shared mutable state (ex: App Delegate)
+- control identity/address
+- inheritene needed (alt. use Protocol Orient-Prog w/structs)
+
+## Actor
 (Swift 5.5)
-- reference type, thread safe
-- prevents data races, since all mutations will be performed serially, one after the other
-- no subclassing
+- reference type, no inheritence
+- Thread Safe: no data races, all mutations are performed serially
+- best for mult-threaded envr
+
+Ref Types: Class, Actors, Closures
 
 ## Optional
 - safe way of dealing with/potential nil (Swift is SAFE lang)
@@ -153,7 +174,7 @@ Parametrised Types for creating reusable funcs & structs that work with any Type
 - Use **where** clause to add constraints, such as conforming to specific protocols
 - Use **some** for more readable parameters in func declarations, instead of using <T: ...>
 
-# Closures
+## Closures
 @escaping vs Non-escaping
 - Closure: code that's defined in one place, but executed later
 - Values they interact with should be in memory at that time
@@ -167,7 +188,7 @@ Parametrised Types for creating reusable funcs & structs that work with any Type
 - Strong refs can cause retain cycles
 - Use weak or unknown 
 
-# Weak VS Unowned
+## Weak VS Unowned
 - refer to an instance without keeping a strong ref
 - prevent retain cycles in closures or delegates
 
@@ -183,16 +204,20 @@ UNOWNED
 
 - Top cause of leaks
 
-# Memory Leaks
+## Memory Leaks
 - If used memory exceeds allocated app memory - crash
 - Retain cycles: closures or delegates
 - Xcode Instruments > Leaks
 
-# Codable 
+## Codable 
 - Protocol used to encode/decode data into external formats (eg. JSON)
 - JSONEncoder (eg. into String)
 - JSONDecoder (eg. Into JSON)
 - Use CodingkKeys to customise (eg. The name of the property)
+
+## Caching
+- NSCache (mem cache) used in Kingfisher
+- TODO: finish
 
 # UIKit
 
@@ -405,6 +430,62 @@ Functions:
 ### Dispatch Work Item 
 - flexibility to cancel task if exec hasnt started
 - can dispatch on both DispatchQueue & DispatchGroup
+
+## Deadlock
+- two or more threads are blocked, waiting for each other to release resources - system freeze or crash
+
+```swift
+let queue1 = DispatchQueue(label: "com.example.queue1")
+let queue2 = DispatchQueue(label: "com.example.queue2")
+
+queue1.async {
+    print("Task 1a")
+    queue2.sync {
+        print("Task 1b")
+    }
+    print("Task 1c")
+}
+
+queue2.async {
+    print("Task 2a")
+    queue1.sync {
+        print("Task 2b")
+    }
+    print("Task 2c")
+}
+```
+
+## Race Conditions
+- two or more threads access and modify shared data simultaneously, resulting in unpredictable behavior
+- to prevent use locks, semaphores, or barriers
+
+Problem: since we might access the same currentCount var from mult threads, some values may not be written
+
+```swift
+var count = 0
+
+func incrementCount() {
+    let currentCount = count
+    count = currentCount + 1
+}
+
+DispatchQueue.concurrentPerform(iterations: 1000) { _ in
+    incrementCount()
+}
+
+print("Final count: \(count)")
+```
+
+Fix: force block to be exec synchronously:
+
+```swift
+func incrementCount() {
+    queue.sync {
+        let currentCount = count
+        count = currentCount + 1
+    }
+}
+```
 
 ## Async Await
 (iOS 15)
@@ -642,7 +723,9 @@ let four = 2 + 2 // 4
 ## Graphs 
     - Nodes connected by edges 
 ## Heap
-    TODO
+    - Complete binary tree
+    - Max-Heap: root node value is greatest among children
+    - Min-Heap: root node value is least among children
 ## Hash Tables 
     - maps keys to values w/functions 
     - passwords, digital signature, caching, URL shortening, SHA-256 (cryptographic func)
