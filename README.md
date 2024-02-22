@@ -14,6 +14,8 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Memory Leaks](#memory-leaks)
     - [Codable](#codable)
     - [Caching](#caching)
+    - [Method Dispatch](#method-dispatch)
+    - [Inheritance vs Interfaces](#inheritance-vs-interfaces)
 - [UIKit](#uikit)
     - [Auto Layout](#auto-layout)
     - [Navigation](#navigation)
@@ -28,7 +30,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [VIPER](#viper)
     - [Clean Architecture](#clean-architecture)
 - [Concurrency](#concurrency)
-    - [Grand Central Dispatch vs Manual Thread Creation](#grand-central-dispatch-vs-manual-thread-creation)
+    - [Grand Central Dispatch](#grand-central-dispatch)
     - [Asynchronous vs Synchronous](#asynchronous-vs-synchronous)
     - [Serial vs Concurrent Queue](#serial-vs-concurrent-queue)
     - [Dispatch Queues](#dispatch-queues)
@@ -110,10 +112,10 @@ Concepts related to the core swift language principles.
 - can extend, not inherit
 - Copy on write: copy only if contents are modified, otherwise ref
 - properties of instance aren't mutable (can't be modified)
-- static method dispatch
+- static (direct) method dispatch
 - has default (memberwise) initializer - if no private properties
 - init in extension calls default init (acts like convenience)
-- mock inheritence = protocol + ext + default implem of protocol methods
+- mock inheritance = protocol + ext + default implem of protocol methods
 
 Alloc on Stack:
 - Thread Safe: each thread has its own stack
@@ -126,24 +128,25 @@ Alloc on Stack:
 - inheritance
 - properties of instance are mutable (can be modified)
 - dynamic method dispatch
-- required & convenient init
-- use === to compare if ref/obj/address identitical
+- required & convenience init
+- use === to compare if ref/obj/address identical
 
 Alloc on Heap:
-- Thead Unsafe: global mem space needed, not exclusive to any thread
+- Thread Unsafe: global mem space needed, not exclusive to any thread
 - mem size calc at run-time (mem leaks)
 - lifetime can't be predicted
 - slower alloc/dealloc: entire heap is recalc
 
 Use cases:
+- need to override methods
 - Obj-C interoperability
 - need shared mutable state (ex: App Delegate)
 - control identity/address
-- inheritene needed (alt. use Protocol Orient-Prog w/structs)
+- inheritance needed (alt. use Protocol Orient-Prog w/structs)
 
 ## Actor
 (Swift 5.5)
-- reference type, no inheritence
+- reference type, no inheritance
 - Thread Safe: no data races, all mutations are performed serially
 - best for mult-threaded envr
 
@@ -216,8 +219,41 @@ UNOWNED
 - Use CodingkKeys to customise (eg. The name of the property)
 
 ## Caching
+- disk vs mem caching
 - NSCache (mem cache) used in Kingfisher
-- TODO: finish
+
+## Method Dispatch
+- tells app where to find method in mem before it's exec in CPU
+
+Direct/Static Dispatch:
+- faster - knows location 
+- when no overridden methods (no inheritance)
+
+Table/Dynamic Dispatch:
+- slower - search first 
+- witness table - pointer to func (keep track of location of funcs) 
+- subclass: copy witness table & new subclass methods are added
+
+Message Dispatch:
+- slowest but most dynamic
+- allows dispatch behavior to be changed at runtime
+- no func offset - entire class hierarchy crawled to determine exec func
+
+Value Type: Static
+Protocol & Ref Type: Table 
+Extension: Static
+
+If class 'final' - static dispatch
+If method 'dynamic' - message dispatch - moved to Obj-C runtime
+
+## Inheritance vs Interfaces
+- swift doesn't support mult inheritance (diamond problem)
+- solution: interfaces (protocols) - implement instead of overriding
+
+Protocols:
+- Properties:
+    - specifies name, type, gettable/settable
+    - doesn't specify stored/comp property
 
 # UIKit
 
@@ -257,7 +293,7 @@ SwiftUI: onAppear & onDisappear
 
 ## UIGestureRecognizer
 - Add custom recognizer of pinches, drags, taps, etc. to regular views (other than buttons)
-- add target & action - updates when gesture starts, changes, or ends
+- add target & action - updates gesture start, change, or end
 - add gesture rec. to view (one and only one)
 - handlePinch(_:) and handleRotate(_:)
 - UIPanGestureRecognizer, UIPinchGestureRecognizer, UIRotationGestureRecognizer
@@ -289,10 +325,16 @@ struct ContentView: View {
 # Architectural Patterns
 
 ## MVC
-// TODO: - add info
+- Model: data & business logic
+- View: UI & sends interactions to controller
+- Controller: intermediary b/ween view & model
 
 ## MVP
-// TODO: - add info
+- Model: data & business logic
+- View: more isolated, interacts primarily w/presenter
+- Presenter: 
+    - receives input from view, interacts w/ model to perform business logic, and updates the view with the results.
+    - interacts w/model independently of view
 
 ## MVVM
 - We want: separation of concerns, testability and reusability.
@@ -307,7 +349,11 @@ Two Way Binding: V + VM
 - Observability: Combine Framework
 
 ## VIPER
-// TODO: - add info
+- View: present UI and gather user input - send user actions to Presenter
+- Interactor: business logic - fetches data from the model (Entity) & processes it (ex: network requests) - then sends the data to the Presenter for display
+- Presenter: middleman - takes input from Interactor, prepares data for display, then passes it to the View. Decides what happens when a user interacts with the View.
+- Entity: data structures (structs) - business objects.
+- Router: navigation logic for the application - next screen based on user actions & the app's state
 
 ## Clean Architecture
 Modular, scalable, and maintainable software by separating into *layers*
@@ -343,18 +389,16 @@ Parallelism:
 - using multiple resources to solve problems by breaking them down
 - 2 queues -> 2 counters (more resources)
 
-
-### Grand Central Dispatch vs Manual Thread Creation
-Manually:
-- more control: start, delay, cancel, etc. 
-- init Thread obj 
-- responsibility: dealloc, resources access, mem leaks, etc.
-
-Grand Central Dispatch:
+### Grand Central Dispatch
 - queue API - start tasks in FIFO order
 - decides which thread should exec task 
 - chooses appropriate dispatch queue
 - app can put task in queue SYNC or ASYNC
+
+Manual Creation:
+- more control: start, delay, cancel, etc. 
+- init Thread obj 
+- responsibility: dealloc, resources access, mem leaks, etc.
 
 Order vs Manner of Exec
 - Order: decides if task will be picked up serially or concurrently
@@ -363,6 +407,7 @@ Order vs Manner of Exec
 ## Asynchronous vs Synchronous
 - Async: don't block current exec, new task will be completed later
 - Sync: block current exec until new task is completed
+- Sync/Async affects current thread FROM which you are dispatching
 
 ## Serial vs Concurrent Queue
 - Serial: 1 task at a time
@@ -370,7 +415,6 @@ Order vs Manner of Exec
 
 Differences:
 - Serial/Concurrent affects destination queue TO which you are dispatching.
-- Sync/Async affects the current thread FROM which you are dispatching
 
 ## Dispatch Queues
 - 3 Types of Queues: 
@@ -386,7 +430,7 @@ Differences:
     - Custom Queues Queues
 
 ### Quality of Service 
-- tells the system how to utilize the resources in system
+- tells the system how to utilize the resources
 - User Interactive (Highest Priority - finish first) - involved in updating UI (ex. Animations)
 - User Initiated - data required for immediate results (ex. scrolling table view)
 - Utility - Long running task, low priority (downloading)
@@ -544,7 +588,7 @@ func incrementCount() {
 - Receive (on main thread)
 
 ## RxSwift
-- ibrary for async & event-based code
+- library for async & event-based code
 - using observable sequences & functional operators
 - parametrized exec w/schedulers
 
@@ -669,7 +713,7 @@ Class with a single shared instance, implemented with a static constant/method.
 - Protocol-Based Polymorphism
 
 # Protocol Oriented Programming
-- composition & protocol comformance over inheritence
+- composition & protocol comformance over inheritance
 - flexible, allows to mix-and-match protocols, reusable
 - protocol extensions allow for default implementations & adding functionality
 
@@ -757,7 +801,7 @@ let four = 2 + 2 // 4
 - at current depth before moving to next
 - O(V + E)
 ## Greedy Algorithms
-- Dijkstra's (dykestra's) alg - shortest path to netx node
+- Dijkstra's (dykestra's) alg - shortest path to next node
 - Fractional Knapsack alg - find profit/weight ratio, sort by ratio, add until full
 
 # SOLID Principles
