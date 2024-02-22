@@ -160,11 +160,13 @@ Ref Types: Class, Actors, Closures
 - Unsafe: forced unwrapping 
 
 ## Automatic Reference Counting
-- automatically tracks memory used by instances of classes, to prevent memory leaks
-- each instance has retain count, indicating # of refs that point to it
-- Add new ref, remove when ref isn't needed
-- Count is zero - instance is deallocated
-- Supports weak/unowned to prevent retain cycles
+- memory management feature of the Clang compiler for Obj-C & Swift
+- inserts messages 'retain' and 'release' into the object code (product of comppiler) at compile time
+
+How it works: 
+- tracks the # of strong references to each object in your code
+- when an obj has no more strong references, it is deallocated
+- Supports weak/unowned refs to prevent retain cycles
 
 ## Generics
 Parametrised Types for creating reusable funcs & structs that work with any Type
