@@ -16,6 +16,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Caching](#caching)
     - [Method Dispatch](#method-dispatch)
     - [Inheritance vs Interfaces](#inheritance-vs-interfaces)
+    - [Animations](#animations)
 - [UIKit](#uikit)
     - [Auto Layout](#auto-layout)
     - [Navigation](#navigation)
@@ -256,6 +257,9 @@ Protocols:
 - Properties:
     - specifies name, type, gettable/settable
     - doesn't specify stored/comp property
+    
+## Animations
+// TODO...
 
 # UIKit
 
