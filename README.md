@@ -259,7 +259,8 @@ Protocols:
     - doesn't specify stored/comp property
     
 ## Animations
-// TODO...
+-  use **UIView.animate** API
+- animation(withDuration: animations: completion)
 
 # UIKit
 
