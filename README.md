@@ -70,6 +70,9 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Command](#command)
     - [Builder](#builder)
     - [Factory](#factory)
+    - [Facade](#facade)
+    - [Mediator](#mediator)
+    - [Coordinator](#coordinator)
     - [Singleton](#singleton)
 - [Object Oriented Programming](#object-oriented-programming)
     - [Encapsulation](#encapsulation)
@@ -103,6 +106,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
 - [Databases](#databases)
     - [Relational](#relational)
     - [Non-Relational](#non-relational)
+- [Automation Testing](#automation-testing)
 
 # Swift
 
@@ -278,14 +282,10 @@ Adaptability to different screens: adjusts content dynamically for multiple devi
 - UINavigationController manages a stack of view controllers, pushing or popping views
 - Storyboard VS Programmatic Segues
 
-### Coordinator Pattern
-- Coordinator Protocol - methods for starting, presenting, and finishing the flow
-- Coordinators create and present VCs & communicate between each other, pass data, trigger navigation, etc.
-- Benefits from Dependency Injection
-
 ## Life Cycle Methods 
 (UIViewController)
-- init - method for instance 
+- init - method for instance
+- loadView() creates and instantiates the UIView obj
 - viewDidLoad() - loaded in memory (one time setup, fetching data, init UI components)
 
 (Pull up Sheet)
@@ -419,8 +419,6 @@ Order vs Manner of Exec
 ## Serial vs Concurrent Queue
 - Serial: 1 task at a time
 - Concurrent: exec mult tasks simultaneously, but tasks will be dequeued serially FIFO
-
-Differences:
 - Serial/Concurrent affects destination queue TO which you are dispatching.
 
 ## Dispatch Queues
@@ -643,15 +641,15 @@ func incrementCount() {
 - Creational - create new objects easily & safely with flexibility
 - Structural - streamlined ways to correlate relationships between obj & entities 
 
-## Observer 
+## Observer
 - obj with dependents (observers)
 - one to many relationship (combine, swiftUI, notification)
 
-## Command 
+## Command
 - sender-receiver (make an order) 
 - queue tasks, tracking operation history, etc.
 
-## Builder 
+## Builder
 - add methods (burgers - tomatoes, mayo, etc) 
 - similar to SwiftUI
 
@@ -685,7 +683,65 @@ let latteFactory = LatteFactory()
 makeAndServeCoffee(factory: latteFactory, name: "Latte")
 ```
 
-## Singleton Pattern
+## Facade
+- facade is a higher-level interface that simplifies interactions b/w subsystems
+- subsystems have zero knowledge of the facade
+- often used w/API calls/fetching
+- minimizes dependencies between subsystems
+- let's suppose we have 2 subsystems AccountClient & MovieClient (which depends on AccountClient) - premium & regular accounts
+- Create MovieListFetcher to init both subsystems & use func getMovies to call the funcs .getAccountType * then .getUpcomingMovies
+```swift
+protocol MovieClient {
+    func getUpcomingMovies(accountType: AccountType,
+                           completion: @escaping (Result<[Movie], Error>) -> Void)
+}
+
+protocol AccountClient {
+    func getAccountType(completion: @escaping (Result<AccountType, Error>) -> Void)
+}
+```
+
+```swift
+class MovieListFetcher {
+    let movieClient: MovieClient
+    let accountClient: AccountClient
+
+    init(movieClient: MovieClient, accountClient: AccountClient) {
+        self.movieClient = movieClient
+        self.accountClient = accountClient
+    }
+
+    func getMovies(completion: @escaping (Result<[Movie], Error>) -> Void) {
+        accountClient.getAccountType { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let accountType):
+                self.movieClient.getUpcomingMovies(accountType: accountType, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
+```
+
+## Mediator
+- used in chat context between mult users
+- Protocol ChatUser: var name, func send() & receive()
+- class User: implements ChatUser
+- ChatMediator class has list of Users & func register(user)
+- init chatMediator and 3 users(Ani, Bob, Chad)
+- user1.send("helllo")
+- user2.send("hello there")
+
+Source: https://ruslandzhafarov.medium.com/design-patterns-in-swift-mediator-2e1be4c7ffc3
+
+## Coordinator
+- Coordinator Protocol - methods for starting, presenting, and finishing the flow
+- Coordinators create and present VCs & communicate between each other, pass data, trigger navigation, etc.
+- Benefits from Dependency Injection
+
+## Singleton
 
 Class with a single shared instance, implemented with a static constant/method.
 - Child class can't override static var or func.
@@ -864,3 +920,7 @@ let four = 2 + 2 // 4
 - flexible data models (key: value, document, graph, etc.)
 - easy horizontal scalability - distributing data across nodes
 - used for real-time analytics, social networks, content management, distributed systems
+
+# Automation Testing
+- Automation testing w/APPIUM (java) using XCUItest iOS driver
+- inspect element class, attributes, etc.
