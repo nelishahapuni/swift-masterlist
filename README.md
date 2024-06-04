@@ -196,7 +196,12 @@ Parametrised Types for creating reusable funcs & structs that work with any Type
 - Escaping: exec at later time, after func has returned
 - Used for network calls
 - Strong refs can cause retain cycles
-- Use weak or unknown 
+- Use weak or unknown
+
+- anonymous funcs: Closures are implemented as anon funcs - they don't have a name & defined inline
+- lexical scoping: capture the vars from the surrounding lexical context - they can access and manipulate vars from the scope in which they are defined.
+- lifetime: lifetime extends beyond the scope in which they are defined - allows them to be passed around and executed at a later time, while still retaining access to the variables they captured.
+- Stateful Behavior: can maintain state between mult invocations bc they capture & retain the state of variables from their enclosing scope.
 
 ## Weak VS Unowned
 - refer to an instance without keeping a strong ref
