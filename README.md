@@ -81,6 +81,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Polymorphism](#polymorphism)
 - [Protocol Oriented Programming](#protocol-oriented-programming)
 - [Functional Programming](#functional-programming)
+    - [Map](#map)
 - [Data Structures](#data-structures)
     - [Arrays](#arrays)
     - [Linked Lists](#linked-lists)
@@ -790,6 +791,24 @@ Class with a single shared instance, implemented with a static constant/method.
 - given same inputs - returns the same output
 - no side effects (unpredicable behavior): input/output, throwing errors, network calls, etc
 - higher Order Functions: .map(), .filter(), .reduce()
+
+## Map
+Map - transform from one thing to another
+```swift
+let numbers = [1, 2, 3, 4, 5]
+let doubled = numbers.map { $0 * 2 }
+```
+- Will take each value in an array & run it through a closure, where $0 refers to the element in question.
+```swift
+let imageViews = view.subviews.compactMap { $0 as? UIImageView }
+let urls = urlStrings.compactMap { URL(string: $0) }
+```
+- compactMap() does the same thing, but if your transformation returns an optional it will be unwrapped and have any nil values discarded.
+```swift
+let number: String? = getUser(id: 97)
+let result = number.flatMap { Int($0) }
+```
+- flatMap() also performs a transformation, then flattens what comes back so that “optional optional” just becomes “optional”.
 
 Principles:
 - Immutability - declared values are unchanged
