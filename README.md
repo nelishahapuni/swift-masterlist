@@ -631,6 +631,23 @@ august2019
     }
 ...
 ```
+### Filtering Operators
+NOTE: Most operators have a throwing equivalent (e.g. _filter_ vs _tryFilter_)
+
+- filter() - filter incoming value by a condition - e.g. filter{ $0.isMultiple(of: 3) }
+- removeDuplicates() - removing incoming values with are dublicates - works on any Type that conforms to Equatable
+- compactMap() - operate on optional values, discard nils (e.g. convert Strings to Ints, discard nil results)
+- ignoreOutput() - doesn’t matter which or how many values are emitted - they’re all ignored - you only push the completion event through to the consumer
+- first(where:) - LAZY - only takes values until it finds one matching the condition you provided - when match is found - cancels subscription and completes
+- last(where:) - GREEDY - wait for all values to be emitted before finding a match - upstream must be a publisher which completes
+
+#### Dropping Values
+- dropFirst(n) - ignores the first _n_ values emitted by the publisher - only values emitted after _n_ values have been emitted will be allowed (default is 1)
+- drop(while:) - ignores any values emitted by the publisher until the _first time_ that condition is met
+- drop(untilOutputFrom: _isReady_) - skips any values emitted by a publisher until a 2nd publisher starts emitting values, creating a relationship between them - useful when you have a user tapping a button, but you want to ignore all taps until your _isReady_ publisher emits some result
+
+#### Limiting values (Prefix family)
+- prefix(_:), prefix(while:), prefix(untilOutputFrom:) - the prefix operators _take_ values until that condition is met, then completes
 
 ## RxSwift
 - library for async & event-based code
