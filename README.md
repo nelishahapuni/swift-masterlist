@@ -598,6 +598,40 @@ func incrementCount() {
 - Catch - handle errors from publisher
 - Receive (on main thread)
 
+### Transforming Operators
+- collect() - convert a stream of values into an array - collect(n) - collect into arrays with n number of items
+- map() - operate on values emmitted from a publisher
+- tryMap(_:) - takes a closure that can throw an error, which is then emitted downstream
+```swift
+...
+Just("Directory name that does not exist")
+    .tryMap { try FileManager.default.contentsOfDirectory(atPath: $0) }
+    .sink(receiveCompletion: { print($0) },
+          receiveValue: { print($0) })
+...
+```
+#### flatMap(maxPublishers:_:)
+- flattens multiple emissions from upstream publishers into a single downstream publisher
+- the publisher returned by flatMap often isn't of the same type as the upstream publishers it receives
+- You can specify a **n** number of max publishers ( .flatMap(maxPublishers: .max(n)) { $0.message }) (default is unlimited)
+
+#### Replacing Upstream Output
+- replaceNil(with:) - set a default value to replace nil values with - passes an optional downstream
+- replaceEmpty(with:) - replaces (inserts) a value if a publisher completes without emitting a value
+
+#### Incrementally transforming output
+- scan(_:_:) - provides the current value emitted by an upstream publisher to a closure, along with the last value returned by that closure.
+- tryScan() - same but throws an error
+
+```swift
+...
+august2019
+    .scan(50) { latest, current in
+      max(0, latest + current)
+    }
+...
+```
+
 ## RxSwift
 - library for async & event-based code
 - using observable sequences & functional operators
