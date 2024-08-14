@@ -649,6 +649,30 @@ NOTE: Most operators have a throwing equivalent (e.g. _filter_ vs _tryFilter_)
 #### Limiting values (Prefix family)
 - prefix(_:), prefix(while:), prefix(untilOutputFrom:) - the prefix operators _take_ values until that condition is met, then completes
 
+### Combining Operators
+#### Prepending
+- prepend(Output...) - it can take any # of values, as long as they’re of the same _Output_ type as the original publisher
+- prepend(Sequence) - it takes any _Sequence_ object as an input (e.g. Array or Set) - use .prepend(stride(from: 6, to: 11, by: 2)) to _stride_ through values 6-11 in steps of 2
+- prepend(Publisher) - 
+```swift
+...
+let publisher = [3, 4].publisher
+publisher
+    .prepend(1, 2)
+    .prepend(-1, 0)
+    .sink(receiveValue: { print($0) })
+...
+// prints
+-1
+0
+1
+2
+3
+4
+```
+#### Appending
+-  works similarly to prepend: It also takes a variadic list of type _Output_ but then appends its items after the original publisher has completed with a .finished event
+
 ## RxSwift
 - library for async & event-based code
 - using observable sequences & functional operators
