@@ -17,6 +17,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Method Dispatch](#method-dispatch)
     - [Inheritance vs Interfaces](#inheritance-vs-interfaces)
     - [Animations](#animations)
+    - [Typealias](#typealias)
 - [UIKit](#uikit)
     - [Auto Layout](#auto-layout)
     - [Navigation](#navigation)
@@ -271,6 +272,62 @@ Protocols:
 ## Animations
 -  use **UIView.animate** API
 - animation(withDuration: animations: completion)
+
+## Typealias
+-  Assign an alias to existing types
+```swift
+struct Receipt {
+    let totalCosts: Double
+}
+```
+which then becomes:
+```swift
+typealias Dollar = Double
+typealias Euro = Double
+
+struct Receipt {
+    let totalCosts: Dollar
+}
+```
+### Use with Generics
+```swift
+typealias Currency = Double
+typealias ExchangeResult<Currency> = Result<Currency, Error>
+
+enum ExchangeError: Error {
+    case invalidInput
+}
+```
+You can use the **Currency** typealias, to pass either **Euro** or **Dollar**:
+```swift
+extension Dollar {
+    func toEuro() -> ExchangeResult<Euro> {
+        guard self > 0 else {
+            return ExchangeResult.failure(ExchangeError.invalidInput)
+        }
+        return Result.success(self * 0.896)
+    }
+}
+
+let receipt = Receipt(totalCosts: 10)
+receipt.totalCosts.toEuro() // .success(8.96)
+
+let doubleNumber: Double = 10
+doubleNumber.toEuro() // .success(8.96)
+```
+### Reusing callbacks
+typealias Completion = () -> Void
+
+### Conforming to Multiple Ptocols
+typealias multProtocols = FirstProtocol & SecondProtocol
+```swift
+typealias TransitionDelegate = UIViewController & UIViewControllerTransitioningDelegate
+```
+
+### Reusable Dictionary
+```swift
+public typealias TrackingProperties = [String: Any]
+```
 
 # UIKit
 
