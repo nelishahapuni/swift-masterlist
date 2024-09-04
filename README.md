@@ -23,6 +23,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Navigation](#navigation)
     - [Life Cycle Methods](#life-cycle-methods)
     - [UIGestureRecognizer](#uigesturerecognizer)
+    - [Responder Chain](#responder-chain)
 - [SwiftUI](#swiftui)
     - [Property Wrappers](#property-wrappers)
 - [Architectural Patterns](#architectural-patterns)
@@ -51,6 +52,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Continuous Integration](#continuous-integration)
     - [Continuous Deployment](#continuous-deployment)
 - [App Signing](#app-signing)
+- [Identity Pinning](#identity-pinning)
 - [Frameworks](#frameworks)
     - [Combine](#combine)
     - [RxSwift](#rxswift)
@@ -368,6 +370,8 @@ SwiftUI: onAppear & onDisappear
 - handlePinch(_:) and handleRotate(_:)
 - UIPanGestureRecognizer, UIPinchGestureRecognizer, UIRotationGestureRecognizer
 
+## Responder Chain
+
 # SwiftUI 
 
 ## Property Wrappers
@@ -638,10 +642,12 @@ func incrementCount() {
 - Environment Promotion (dev > staging > prod)
 - Rollbacks (if issues detected)
 
-# APP Signing
+# App Signing
 - digital ID of app
 - certificate issued by APPLE
 - only executable code is signed
+
+# Identity Pinning
 
 # Frameworks
 
