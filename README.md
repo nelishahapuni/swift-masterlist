@@ -987,6 +987,8 @@ let four = 2 + 2 // 4
     - enqueue, dequeue, peek 
     - task scheduling
 ## Trees 
+![]() <img src="https://i.imgur.com/YJaMK71.jpeg)" width=30%>
+
     - hierarchical structure of nodes, each with/value & set of child nodes 
     - Binary Trees
 ## Graphs 
@@ -1010,6 +1012,18 @@ let four = 2 + 2 // 4
 ## Quick Sort 
 - D&C, select pivot, partition around it, recursively sort partitions & combine
 - O(n^2)
+
+## Topological Sort
+![]() <img src="https://i.imgur.com/b9g6btz.jpeg" width=50%>
+
+## Dijkstra's algorithm
+![]() <img src="https://i.imgur.com/9dq4uux.jpeg" width=50%>
+
+![]() <img src="https://i.imgur.com/ee3twZ6.jpeg" width=50%>
+
+![]() <img src="https://i.imgur.com/tZayBSf.jpeg" width=50%>
+
+## Bellman-Ford
 
 ## Introsort
 (swift)
