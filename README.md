@@ -26,6 +26,7 @@ This documents contains a collection of Swift, OOP, SOLID, etc. concepts.
     - [Responder Chain](#responder-chain)
 - [SwiftUI](#swiftui)
     - [Property Wrappers](#property-wrappers)
+    - [View Preferences](#view-preferences)
 - [Architectural Patterns](#architectural-patterns)
     - [MVC](#mvc)
     - [MVP](#mvp)
@@ -395,6 +396,8 @@ struct ContentView: View {
 @Environment(\.colorScheme) var colorScheme (dark/light)
 ```
 - managing shared data and configuration by injecting values into views
+
+## View Preferences
 
 # Architectural Patterns
 
