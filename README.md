@@ -969,6 +969,36 @@ let four = 2 + two() // 4
 // or
 let four = 2 + 2 // 4
 ```
+# SOLID Principles
+
+## Single Responsibility Principle
+- Avoid Class Monoliths - clear class responsibilities - break down functionality into smaller classes
+- Decoupled code - easier to test
+- Maintainable - changes to one part is less likely to affect others
+
+## Open Closed Principle 
+- Open for extension, closed for modification
+- Extensions to add functionality without modifying existing code
+    2. Dependency Injection - substituting dependencies without modifying class
+    3. Abstraction & Inheritance - New functionality can be added by inheriting from parent
+
+## Liskov Substitution 
+- objs of superclass should be replaceable w/ objs subclass without affecting the program 
+    1. Subtype Conformance - subclass inherits from base class & conforms to its protocols
+    2. Overriding Methods - overriden method in subclass should have at least same behaviour as base
+    3. Maintains the same method signature when subclassing or conforming to protocols
+
+## Interface Segregation 
+- should conform only to necessary protocols 
+    1. Smaller & Focused Protocols (Flyable - takeoff(), land(), fly()) Avoid Fat protocols
+    2. Conform to multiple relevant protocols (Duck - Flyable, Swimmable)
+    3. Provide Default Implementation when needed
+    4. Protocol Composition (Protocol Walker, Talker) -> typealias Worker = Walker & Talker
+
+## Dependency Inversion
+- Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
+- Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
+- Inversion of Control Containers - Swinject
 
 # Data Structures
 
@@ -1045,37 +1075,6 @@ let four = 2 + 2 // 4
 ## Greedy Algorithms
 - Dijkstra's (dykestra's) alg - shortest path to next node
 - Fractional Knapsack alg - find profit/weight ratio, sort by ratio, add until full
-
-# SOLID Principles
-
-## Single Responsibility Principle
-- Avoid Class Monoliths - clear class responsibilities - break down functionality into smaller classes
-- Decoupled code - easier to test
-- Maintainable - changes to one part is less likely to affect others
-
-## Open Closed Principle 
-- Open for extension, closed for modification
-- Extensions to add functionality without modifying existing code
-    2. Dependency Injection - substituting dependencies without modifying class
-    3. Abstraction & Inheritance - New functionality can be added by inheriting from parent
-
-## Liskov Substitution 
-- objs of superclass should be replaceable w/ objs subclass without affecting the program 
-    1. Subtype Conformance - subclass inherits from base class & conforms to its protocols
-    2. Overriding Methods - overriden method in subclass should have at least same behaviour as base
-    3. Maintains the same method signature when subclassing or conforming to protocols
-
-## Interface Segregation 
-- should conform only to necessary protocols 
-    1. Smaller & Focused Protocols (Flyable - takeoff(), land(), fly()) Avoid Fat protocols
-    2. Conform to multiple relevant protocols (Duck - Flyable, Swimmable)
-    3. Provide Default Implementation when needed
-    4. Protocol Composition (Protocol Walker, Talker) -> typealias Worker = Walker & Talker
-
-## Dependency Inversion
-- Use Protocols as Abstractions: high-level modules rely on abstractions rather than concrete implementation (Protocol MessageSender: sendMessage() - class EmailSender, SMSSender) 
-- Dependency Inject into high-level modules instead of creating them internally (constructor, property, or method injection)
-- Inversion of Control Containers - Swinject 
 
 # Best Practices
 - KISS (keep it stupid simple), DRY (dont repeat yourself)
