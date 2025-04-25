@@ -923,9 +923,20 @@ Class with a single shared instance, implemented with a static constant/method.
 - Protocol-Based Polymorphism
 
 # Protocol Oriented Programming
-- composition & protocol comformance over inheritance
+
+## Comformance over Inheritance 
+- protocol comformance over inheritance (for structs)
 - flexible, allows to mix-and-match protocols, reusable
-- protocol extensions allow for default implementations & adding functionality
+- Loose coupling — de-couple by only knowing the specific interface required 
+
+## Default Implementation
+- Extensions allow default implementations & adding functionality
+- Protocols can have concrete implementation (braze, xtreme push, etc)
+    - e.g. today we use Braze, but tomorrow we want Xtreme Push
+    - No need to make changes within individual project files, as all objcs conform to the same protocols
+
+## Testability
+- good for TESTABILITY
 
 # Functional Programming
 - declarative, pure functions
